@@ -77,10 +77,16 @@ def find_artist_on_spotify(sp: spotipy.Spotify, artist_name: str) -> dict | None
         "url": best.get("external_urls", {}).get("spotify", ""),
     }
 
-def get_top_tracks_for_artist(sp: spotipy.Spotify, artist_id: str, n: int = 3) -> list[str]:
+    def get_top_tracks_for_artist(sp: spotipy.Spotify, artist_id: str, n: int = 3) -> list[str]:
     """Returns Spotify track URIs for an artist's top tracks."""
-    results = sp.artist_top_tracks(artist_id)
-    tracks = results.get("tracks", [])[:n]
+    token = sp.auth_manager.get_access_token(as_dict=False) if hasattr(sp.auth_manager, 'get_access_token') else sp._auth
+    headers = {"Authorization": f"Bearer {sp.auth_manager.get_cached_token()['access_token']}"}
+    url = f"https://api.spotify.com/v1/artists/{artist_id}/top-tracks"
+    import requests as req
+    response = req.get(url, headers=headers)
+    if response.status_code != 200:
+        return []
+    tracks = response.json().get("tracks", [])[:n]
     return [t["uri"] for t in tracks]
 
 

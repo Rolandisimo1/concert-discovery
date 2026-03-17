@@ -70,7 +70,7 @@ def find_artist_on_spotify(sp: spotipy.Spotify, artist_name: str) -> dict | None
     if not artists:
         return None
     # Return the most popular match
-    best = max(artists, key=lambda a: a["popularity"])
+    best = max(artists, key=lambda a: a.get("popularity", 0))
     return {
         "id": best["id"],
         "name": best["name"],

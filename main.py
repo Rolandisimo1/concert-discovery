@@ -11,15 +11,24 @@ Flow:
 """
 
 import os
-from src.concerts import get_upcoming_concerts
-from src.spotify import (
+from concerts import get_upcoming_concerts
+from spotify import (
     get_spotify_client,
     get_taste_profile,
     find_artist_on_spotify,
     get_top_tracks_for_artist,
     update_discovery_playlist,
 )
-from src.matching import filter_artists_by_taste
+from matching import filter_artists_by_taste
+```
+
+**Fix 2 — docstring** (line 5), change:
+```
+1. Fetch upcoming Denver concerts from Ticketmaster
+```
+to:
+```
+1. Fetch upcoming Raleigh, NC concerts from Ticketmaster
 
 
 def main():

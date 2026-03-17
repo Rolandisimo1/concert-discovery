@@ -1,5 +1,21 @@
 import sys
 print("START", flush=True); sys.stdout.flush()
+print("importing concerts...", flush=True)
+from concerts import get_upcoming_concerts
+print("importing spotify...", flush=True)
+from spotify import (
+    get_spotify_client,
+    get_taste_profile,
+    find_artist_on_spotify,
+    get_top_tracks_for_artist,
+    update_discovery_playlist,
+)
+print("importing matching...", flush=True)
+from matching import filter_artists_by_taste
+print("ALL IMPORTS OK", flush=True)
+
+import sys
+print("START", flush=True); sys.stdout.flush()
 
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth

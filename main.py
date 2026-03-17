@@ -22,11 +22,6 @@ from spotify import (
 from matching import filter_artists_by_taste
 ```
 
-**Fix 2 — docstring** (line 5), change:
-```
-1. Fetch upcoming Denver concerts from Ticketmaster
-```
-to:
 ```
 1. Fetch upcoming Raleigh, NC concerts from Ticketmaster
 

@@ -79,7 +79,7 @@ def find_artist_on_spotify(sp: spotipy.Spotify, artist_name: str) -> dict | None
 
 def get_top_tracks_for_artist(sp: spotipy.Spotify, artist_id: str, n: int = 3) -> list[str]:
     """Returns Spotify track URIs for an artist's top tracks."""
-    results = sp.artist_top_tracks(artist_id, country="US")
+    results = sp.artist_top_tracks(artist_id)
     tracks = results.get("tracks", [])[:n]
     return [t["uri"] for t in tracks]
 

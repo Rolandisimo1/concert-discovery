@@ -2,9 +2,10 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 import os
 import requests as req
+from collections import Counter
 
 
-def get_spotify_client() -> spotipy.Spotify:
+def get_spotify_client():
     auth_manager = SpotifyOAuth(
         client_id=os.environ["SPOTIFY_CLIENT_ID"],
         client_secret=os.environ["SPOTIFY_CLIENT_SECRET"],
@@ -15,7 +16,7 @@ def get_spotify_client() -> spotipy.Spotify:
     return spotipy.Spotify(auth=token_info["access_token"])
 
 
-def get_taste_profile(sp: spotipy.Spotify, top_n: int = 30) -> dict:
+def get_taste_profile(sp, top_n=30):
     profile = {"top_artists": [], "top_genres": [], "top_tracks": []}
     seen_artists = set()
     for time_range in ["short_term", "medium_term", "long_term"]:
@@ -25,7 +26,6 @@ def get_taste_profile(sp: spotipy.Spotify, top_n: int = 30) -> dict:
                 profile["top_artists"].append(artist["name"])
                 profile["top_genres"].extend(artist.get("genres", []))
                 seen_artists.add(artist["name"])
-    from collections import Counter
     genre_counts = Counter(profile["top_genres"])
     profile["top_genres"] = [g for g, _ in genre_counts.most_common(20)]
     results = sp.current_user_top_tracks(limit=top_n, time_range="medium_term")
@@ -35,7 +35,7 @@ def get_taste_profile(sp: spotipy.Spotify, top_n: int = 30) -> dict:
     return profile
 
 
-def find_artist_on_spotify(sp: spotipy.Spotify, artist_name: str) -> dict | None:
+def find_artist_on_spotify(sp, artist_name):
     results = sp.search(q=f"artist:{artist_name}", type="artist", limit=3)
     artists = results.get("artists", {}).get("items", [])
     if not artists:
@@ -50,19 +50,18 @@ def find_artist_on_spotify(sp: spotipy.Spotify, artist_name: str) -> dict | None
     }
 
 
-def get_top_tracks_for_artist(sp: spotipy.Spotify, artist_id: str, n: int = 3) -> list[str]:
-  headers = {"Authorization": f"Bearer {sp._auth}"}
-url = f"https://api.spotify.com/v1/artists/{artist_id}/top-tracks"
+def get_top_tracks_for_artist(sp, artist_id, n=3):
+    headers = {"Authorization": f"Bearer {sp._auth}"}
+    url = f"https://api.spotify.com/v1/artists/{artist_id}/top-tracks"
     response = req.get(url, headers=headers)
-    
     if response.status_code != 200:
+        print(f"   Warning: could not get tracks for {artist_id}: {response.status_code}")
         return []
     tracks = response.json().get("tracks", [])[:n]
     return [t["uri"] for t in tracks]
 
 
-def update_discovery_playlist(sp: spotipy.Spotify, track_uris: list[str],
-                               playlist_name: str = "🎸 Local Discovery") -> str:
+def update_discovery_playlist(sp, track_uris, playlist_name="🎸 Local Discovery"):
     user_id = sp.current_user()["id"]
     playlist_id = None
     playlists = sp.current_user_playlists(limit=50)
@@ -76,7 +75,7 @@ def update_discovery_playlist(sp: spotipy.Spotify, track_uris: list[str],
             user=user_id,
             name=playlist_name,
             public=False,
-            description="Artists playing near Raleigh in the next few months — curated weekly by Claude 🤖",
+            description="Artists playing near Raleigh in the next few months - curated weekly by Claude",
         )
         playlist_id = playlist["id"]
     else:

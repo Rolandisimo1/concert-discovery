@@ -62,23 +62,20 @@ def get_taste_profile(sp: spotipy.Spotify, top_n: int = 30) -> dict:
 
     return profile
 
-
 def find_artist_on_spotify(sp: spotipy.Spotify, artist_name: str) -> dict | None:
     """Search for an artist and return their Spotify info if found."""
     results = sp.search(q=f"artist:{artist_name}", type="artist", limit=3)
     artists = results.get("artists", {}).get("items", [])
     if not artists:
         return None
-    # Return the most popular match
     best = max(artists, key=lambda a: a.get("popularity", 0))
-   return {
-    "id": best["id"],
-    "name": best["name"],
-    "genres": best.get("genres", []),
-    "popularity": best.get("popularity", 0),
-    "url": best.get("external_urls", {}).get("spotify", ""),
-}
-
+    return {
+        "id": best["id"],
+        "name": best["name"],
+        "genres": best.get("genres", []),
+        "popularity": best.get("popularity", 0),
+        "url": best.get("external_urls", {}).get("spotify", ""),
+    }
 
 def get_top_tracks_for_artist(sp: spotipy.Spotify, artist_id: str, n: int = 3) -> list[str]:
     """Returns Spotify track URIs for an artist's top tracks."""

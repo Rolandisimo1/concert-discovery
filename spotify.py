@@ -71,13 +71,13 @@ def find_artist_on_spotify(sp: spotipy.Spotify, artist_name: str) -> dict | None
         return None
     # Return the most popular match
     best = max(artists, key=lambda a: a.get("popularity", 0))
-    return {
-        "id": best["id"],
-        "name": best["name"],
-        "genres": best.get("genres", []),
-        "popularity": best["popularity"],
-        "url": best["external_urls"].get("spotify", ""),
-    }
+   return {
+    "id": best["id"],
+    "name": best["name"],
+    "genres": best.get("genres", []),
+    "popularity": best.get("popularity", 0),
+    "url": best.get("external_urls", {}).get("spotify", ""),
+}
 
 
 def get_top_tracks_for_artist(sp: spotipy.Spotify, artist_id: str, n: int = 3) -> list[str]:

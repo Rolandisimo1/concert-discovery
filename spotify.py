@@ -52,7 +52,7 @@ def find_artist_on_spotify(sp: spotipy.Spotify, artist_name: str) -> dict | None
 
 def get_top_tracks_for_artist(sp: spotipy.Spotify, artist_id: str, n: int = 3) -> list[str]:
   headers = {"Authorization": f"Bearer {sp._auth}"}
-    url = f"https://api.spotify.com/v1/artists/{artist_id}/top-tracks"
+url = f"https://api.spotify.com/v1/artists/{artist_id}/top-tracks"
     response = req.get(url, headers=headers)
     
     if response.status_code != 200:

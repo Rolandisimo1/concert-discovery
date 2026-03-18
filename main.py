@@ -53,7 +53,7 @@ def main():
         if not spotify_artist:
             print(f"  Not found on Spotify: {artist_info['artist']}", flush=True)
             continue
-        tracks = get_top_tracks_for_artist(sp, spotify_artist["id"], n=3)
+        tracks = get_top_tracks_for_artist(sp, spotify_artist["id"], spotify_artist["name"], n=3)
         if tracks:
             all_track_uris.extend(tracks)
             final_artists.append({**artist_info, "spotify": spotify_artist})

@@ -72,13 +72,15 @@ def update_discovery_playlist(sp, track_uris, playlist_name="🎸 Local Discover
             break
     if not playlist_id:
         print(f"Creating new playlist: {playlist_name}")
-        playlist = sp.user_playlist_create(
-            user=user_id,
-            name=playlist_name,
-            public=False,
-            description="Artists playing near Raleigh in the next few months - curated weekly by Claude",
-        )
+  
+        playlist = sp._post("me/playlists", payload={
+            "name": playlist_name,
+            "public": False,
+            "description": "Artists playing near Raleigh - curated weekly by Claude",
+        })
         playlist_id = playlist["id"]
+
+    
     else:
         print(f"Updating existing playlist: {playlist_name}")
     sp.playlist_replace_items(playlist_id, [])

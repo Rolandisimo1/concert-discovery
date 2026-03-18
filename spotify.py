@@ -50,15 +50,16 @@ def find_artist_on_spotify(sp, artist_name):
     }
 
 
+
 def get_top_tracks_for_artist(sp, artist_id, n=3):
-    headers = {"Authorization": f"Bearer {sp._auth}"}
-    url = f"https://api.spotify.com/v1/artists/{artist_id}/top-tracks"
-    response = req.get(url, headers=headers)
-    if response.status_code != 200:
-        print(f"   Warning: could not get tracks for {artist_id}: {response.status_code}")
+    try:
+        results = sp.artist_top_tracks(artist_id)
+        tracks = results.get("tracks", [])[:n]
+        return [t["uri"] for t in tracks]
+    except Exception as e:
+        print(f"   Warning: could not get tracks: {e}", flush=True)
         return []
-    tracks = response.json().get("tracks", [])[:n]
-    return [t["uri"] for t in tracks]
+
 
 
 def update_discovery_playlist(sp, track_uris, playlist_name="🎸 Local Discovery"):

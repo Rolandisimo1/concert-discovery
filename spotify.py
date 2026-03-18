@@ -52,10 +52,9 @@ def find_artist_on_spotify(sp, artist_name):
     }
 
 
-
-def get_top_tracks_for_artist(sp, artist_id, n=3):
+def get_top_tracks_for_artist(sp, artist_id, artist_name, n=3):
     try:
-        results = sp.search(q=f"artist:{artist_id}", type="track", limit=n)
+        results = sp.search(q=f"artist:{artist_name}", type="track", limit=n)
         tracks = results.get("tracks", {}).get("items", [])
         return [t["uri"] for t in tracks[:n]]
     except Exception as e:

@@ -16,9 +16,10 @@ CLIENT_SECRET = "YOUR_SPOTIFY_CLIENT_SECRET"
 REDIRECT_URI = "http://127.0.0.1:8888/callback"
 
 SCOPES = [
-    "user-top-read",           # read your top artists & tracks
-    "playlist-modify-public",  # create/update playlists
+    "user-top-read",
+    "playlist-modify-public",
     "playlist-modify-private",
+    "playlist-read-private",
 ]
 
 def main():

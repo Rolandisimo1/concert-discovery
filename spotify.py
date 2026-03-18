@@ -35,6 +35,8 @@ def get_taste_profile(sp, top_n=30):
     return profile
 
 
+
+
 def find_artist_on_spotify(sp, artist_name):
     results = sp.search(q=f"artist:{artist_name}", type="artist", limit=3)
     artists = results.get("artists", {}).get("items", [])
@@ -53,13 +55,12 @@ def find_artist_on_spotify(sp, artist_name):
 
 def get_top_tracks_for_artist(sp, artist_id, n=3):
     try:
-        results = sp.artist_top_tracks(artist_id)
-        tracks = results.get("tracks", [])[:n]
-        return [t["uri"] for t in tracks]
+        results = sp.search(q=f"artist:{artist_id}", type="track", limit=n)
+        tracks = results.get("tracks", {}).get("items", [])
+        return [t["uri"] for t in tracks[:n]]
     except Exception as e:
         print(f"   Warning: could not get tracks: {e}", flush=True)
         return []
-
 
 
 def update_discovery_playlist(sp, track_uris, playlist_name="🎸 Local Discovery"):

@@ -4,7 +4,7 @@ Automatically finds upcoming concerts near Denver, filters them to your taste us
 
 ## How it works
 
-1. **Ticketmaster API** → upcoming shows within 40 miles of Denver, next 4 months
+1. **Ticketmaster API** → upcoming shows within 40 miles of Raleigh, next 4 months
 2. **Spotify API** → reads your top artists, tracks, and genres
 3. **Claude AI** → picks the artists you'll likely enjoy from the local lineup
 4. **Spotify API** → builds/updates your "🎸 Local Discovery" playlist

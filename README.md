@@ -1,6 +1,6 @@
 # 🎸 Local Concert Discovery
 
-Automatically finds upcoming concerts near Denver, filters them to your taste using Claude AI, and builds a Spotify playlist — every Sunday.
+Automatically finds upcoming concerts near Raleigh, filters them to your taste using Claude AI, and builds a Spotify playlist — every Sunday.
 
 ## How it works
 

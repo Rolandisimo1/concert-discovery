@@ -35,8 +35,6 @@ def get_taste_profile(sp, top_n=30):
     return profile
 
 
-
-
 def find_artist_on_spotify(sp, artist_name):
     results = sp.search(q=f"artist:{artist_name}", type="artist", limit=3)
     artists = results.get("artists", {}).get("items", [])
@@ -52,17 +50,41 @@ def find_artist_on_spotify(sp, artist_name):
     }
 
 
-def get_top_tracks_for_artist(sp, artist_id, artist_name, n=3):
+def get_top_tracks_for_artist(sp, artist_id, artist_name, offset=0, n=3):
+    """
+    Gets n tracks for an artist starting at offset, for weekly rotation.
+    Falls back to search if offset exceeds available tracks.
+    """
     try:
-        results = sp.search(q=f"artist:{artist_name}", type="track", limit=n)
+        # Get more tracks than we need so offset works
+        results = sp.search(q=f"artist:{artist_name}", type="track", limit=50)
         tracks = results.get("tracks", {}).get("items", [])
-        return [t["uri"] for t in tracks[:n]]
+
+        # Filter to only tracks actually by this artist (search can return loose matches)
+        tracks = [
+            t for t in tracks
+            if any(a["id"] == artist_id for a in t.get("artists", []))
+        ]
+
+        if not tracks:
+            # Fallback: just search by name without strict artist filter
+            results = sp.search(q=f"artist:{artist_name}", type="track", limit=n)
+            tracks = results.get("tracks", {}).get("items", [])
+            return [t["uri"] for t in tracks[:n]]
+
+        # Use offset to rotate, wrap around if needed
+        total = len(tracks)
+        start = offset % total if total > 0 else 0
+        # Wrap-around slice
+        rotated = (tracks[start:] + tracks[:start])[:n]
+        return [t["uri"] for t in rotated]
+
     except Exception as e:
-        print(f"   Warning: could not get tracks: {e}", flush=True)
+        print(f"   Warning: could not get tracks for {artist_name}: {e}", flush=True)
         return []
 
 
-def update_discovery_playlist(sp, track_uris, playlist_name="🎸 Local Discovery"):
+def update_discovery_playlist(sp, track_uris, playlist_name=" Local Discovery"):
     user_id = sp.current_user()["id"]
     playlist_id = None
     playlists = sp.current_user_playlists(limit=50)
@@ -72,15 +94,12 @@ def update_discovery_playlist(sp, track_uris, playlist_name="🎸 Local Discover
             break
     if not playlist_id:
         print(f"Creating new playlist: {playlist_name}")
-  
         playlist = sp._post("me/playlists", payload={
             "name": playlist_name,
             "public": False,
             "description": "Artists playing near Raleigh - curated weekly by Claude",
         })
         playlist_id = playlist["id"]
-
-    
     else:
         print(f"Updating existing playlist: {playlist_name}")
     sp.playlist_replace_items(playlist_id, [])
